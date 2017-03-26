@@ -11,9 +11,9 @@ Rather than communicating through windows forms, you can also use other utilitie
 
 This program does **not** work well under Mono/Wine, since I have no special handling of UNIX filenames.
 
-### Constraints
-    * Try not to use more than 5 hours (exceeded)
-    * Do not rely to heavily on existing libraries or other people's code
+### Constraints  
+  * Try not to use more than 5 hours (exceeded)
+  * Do not rely to heavily on existing libraries or other people's code
 
 #### License
 I chose [unlicense](http://unlicense.org/), so you can basically use any code as you'd like.
