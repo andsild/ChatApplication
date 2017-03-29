@@ -27,7 +27,16 @@ namespace ChatApplication
             this.Recipient = recipient;
         }
 
-        public static Message ParseReceivedMessage(string message)
+        public static void ValidateUsername(string username)
+        {
+            if(!Configuration.IsValidFilename(username))
+            {
+                throw new ArgumentException(@"\\Invalid username " + username);
+            }
+        }
+
+
+        public static Message ParseTextToMessage(string message)
         {
             if (string.IsNullOrEmpty(message))
             {
@@ -45,13 +54,6 @@ namespace ChatApplication
             return new Message(sender, recipient, string.Join(" ", inputTextAsList.Skip(2)));
         }
 
-        public static void ValidateUsername(string username)
-        {
-            if(!Configuration.IsValidFilename(username))
-            {
-                throw new ArgumentException(@"\\Invalid username " + username);
-            }
-        }
 
         public static void ValidateMessageText(string message)
         {

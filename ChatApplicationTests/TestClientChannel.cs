@@ -12,12 +12,12 @@ namespace ChatApplicationTests
         [TestMethod]
         public void ParseMessage_EmptyText_AppendsChatError()
         {
-            var mocker = new Mock<IChatApplication>();
+            var mocker = new Mock<IChatUi>();
             var username = "batman";
-            mocker.Setup(x => x.AddChatErrorLine(username, It.IsAny<String>())).Verifiable();
+            mocker.Setup(x => x.AddChatErrorLine(It.IsAny<String>())).Verifiable();
 
             var clientChannel = new MessageParserClient(username, mocker.Object);
-            clientChannel.ParseReceivedMessage(username);
+            clientChannel.OnMessageParserError(new ArgumentException("invalid message"));
 
             mocker.VerifyAll();
         }

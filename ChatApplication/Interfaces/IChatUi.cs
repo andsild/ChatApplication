@@ -7,8 +7,8 @@ namespace ChatApplication
        void AddUserToList(string username);
        void RemoveUserFromList(string username);
        void AddChatErrorLine(string message);
-       void AddChatLine(Message message);
+       void AppendMessageToChat(Message message);
        void Show();
-       string  Username { get; }
+       string Username { get; }
     }
 }

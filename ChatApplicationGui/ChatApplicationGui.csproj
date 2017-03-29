@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatApplicationMain.cs" />
     <Compile Include="ChatForm.cs">
       <SubType>Form</SubType>
     </Compile>

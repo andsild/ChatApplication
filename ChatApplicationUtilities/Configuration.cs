@@ -24,7 +24,7 @@ namespace Utilities
             return !File.Exists(path);
         }
 
-        public static void AppendToFile(string recipient, string message)
+        public static void SendMessageToUser(string recipient, string message)
         {
             string fullPathname = Path.Combine(FIFO_FOLDER, recipient);
             File.AppendAllLines(

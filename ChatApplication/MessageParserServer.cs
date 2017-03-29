@@ -24,21 +24,16 @@ namespace ChatApplication
                 Directory.Delete(Configuration.FIFO_FOLDER, true);
             }
             Directory.CreateDirectory(Configuration.FIFO_FOLDER);
+
         }
 
-        public void ParseReceivedMessage(string text)
+        public void OnMessageParserError(Exception e)
         {
-            Message message = null;
-            try
-            {
-                message = Message.ParseReceivedMessage(text);
-            }
-            catch(ArgumentException ae)
-            {
-                /** shh! */
-                return;
-            }
+            return;
+        }
 
+        public void OnMessageParseSuccess(Message message)
+        {
             if(message.Recipient != username)
             {
                 throw new InvalidOperationException("Recieved stray message ::" + message);

@@ -1,7 +1,10 @@
-﻿namespace ChatApplication
+﻿using System;
+
+namespace ChatApplication
 {
     public interface IMessageParser
     {
-        void ParseReceivedMessage(string text);
+        void OnMessageParserError(Exception e);
+        void OnMessageParseSuccess(Message message);
     }
 }

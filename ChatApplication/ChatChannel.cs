@@ -4,16 +4,15 @@ using System.Threading;
 
 namespace ChatApplication
 {
-    public class ChatChannel : IDisposable
+    public sealed class ChatChannel : IDisposable
     {
-        protected readonly Thread thread;
+        private readonly Thread thread;
         /// <summary>
         /// Pathname to a FirstInFirstOut file which is read continously
         /// </summary>
-        protected readonly string fifoPath;
-        public readonly string Username;
-        protected volatile bool continueMonitoringFile = true;
-        protected readonly IMessageParser messageParser;
+        private readonly string fifoPath;
+        private volatile bool continueMonitoringFile = true;
+        private readonly IMessageParser messageParser;
 
         /// <summary>
         /// A class for creating and monitoring a channel (i.e. file) for chatting.
@@ -21,14 +20,10 @@ namespace ChatApplication
         /// </summary>
         /// <param name="username"></param>
         /// <param name="messageParser"></param>
-        public ChatChannel(string username, IMessageParser messageParser)
+        public ChatChannel(string fifoPath, IMessageParser messageParser)
         {
+            this.fifoPath = fifoPath;
             this.messageParser = messageParser;
-            fifoPath = Path.Combine(Utilities.Configuration.FIFO_FOLDER, username);
-            Username = username;
-
-            var fileStream = File.Create(fifoPath);
-            fileStream.Dispose(); // release process handle
 
             ThreadStart threadStart = MonitorTailOfFile;
             thread = new Thread(threadStart);
@@ -42,11 +37,28 @@ namespace ChatApplication
             File.Delete(fifoPath);
         }
 
-        protected void MonitorTailOfFile()
+        public void ParseTextToMessage(string text)
+        {
+            Message message = null;
+            try
+            {
+                message = Message.ParseTextToMessage(text);
+            }
+            catch (ArgumentException ae)
+            {
+                messageParser.OnMessageParserError(ae);
+                return;
+            }
+
+            messageParser.OnMessageParseSuccess(message);
+        }
+
+        private void MonitorTailOfFile()
         {
             var message = string.Empty;
 
-            using (FileStream fs = new FileStream(fifoPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            // fs is disposed when sr goes out of scope
+            FileStream fs = new FileStream(fifoPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             {
                 using (StreamReader sr = new StreamReader(fs))
                 {
@@ -57,7 +69,7 @@ namespace ChatApplication
                             message = sr.ReadLine();
                             if (!string.IsNullOrEmpty(message))
                             {
-                                messageParser.ParseReceivedMessage(message);
+                                ParseTextToMessage(message);
                             }
                         }
                         while (sr.EndOfStream && continueMonitoringFile)
@@ -67,7 +79,7 @@ namespace ChatApplication
                         message = sr.ReadLine();
                         if (!string.IsNullOrEmpty(message))
                         {
-                            messageParser.ParseReceivedMessage(message);
+                            ParseTextToMessage(message);
                         }
                     }
                 }

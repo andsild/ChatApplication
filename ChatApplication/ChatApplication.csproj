@@ -40,10 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatApplicationMain.cs" />
+    <Compile Include="Interfaces\IChatFormRepository.cs" />
     <Compile Include="Interfaces\IMessageParser.cs" />
     <Compile Include="Interfaces\IChatUi.cs" />
     <Compile Include="MessageParserClient.cs" />
-    <Compile Include="DirectoryMonitor.cs" />
+    <Compile Include="UserMonitor.cs" />
     <Compile Include="Interfaces\IChatApplication.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

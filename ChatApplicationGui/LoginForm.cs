@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatApplication;
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Utilities;
@@ -7,8 +8,9 @@ namespace ChatApplicationGui
 {
     public partial class LoginForm : Form
     {
-        private readonly ChatApplicationClientSide.ChatApplicationMain chatApplication;
-        public LoginForm(ChatApplicationClientSide.ChatApplicationMain chatApplication)
+        private readonly ChatApplicationMain chatApplication;
+
+        public LoginForm(ChatApplicationMain chatApplication)
         {
             this.chatApplication = chatApplication;
             InitializeComponent();

@@ -15,8 +15,8 @@ namespace ChatApplicationTests
         public void MessageToString_ValidMessage_Idempotency()
         {
             var messageFromFields = new Message(exampleSender, exampleRecipient, exampleMessage);
-            var parsedMessageFromFields = Message.ParseReceivedMessage(messageFromFields.ToString());
-            var messageFromText = Message.ParseReceivedMessage($"{exampleSender} {exampleRecipient} {exampleMessage}");
+            var parsedMessageFromFields = Message.ParseTextToMessage(messageFromFields.ToString());
+            var messageFromText = Message.ParseTextToMessage($"{exampleSender} {exampleRecipient} {exampleMessage}");
 
             Assert.AreEqual(messageFromFields.ToString(), parsedMessageFromFields.ToString());
             Assert.AreEqual(messageFromFields.ToString(), messageFromText.ToString());
@@ -26,7 +26,7 @@ namespace ChatApplicationTests
         [TestMethod]
         public void ParseMessage_ValidMessageFields_AssignsFieldsCorrectly()
         {
-            var message = Message.ParseReceivedMessage($"{exampleSender} {exampleRecipient} {exampleMessage}");
+            var message = Message.ParseTextToMessage($"{exampleSender} {exampleRecipient} {exampleMessage}");
             
             Assert.AreEqual(exampleSender, message.Sender);
             Assert.AreEqual(exampleRecipient, message.Recipient);

@@ -1,7 +1,7 @@
 ﻿using ChatApplication;
-using ChatApplicationClientSide;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Utilities;
@@ -13,7 +13,7 @@ namespace ChatApplicationGui
         private readonly ChatApplicationMain chatApplication;
 
         private readonly string username;
-        public string Username { get { return this.username; } }
+        public string Username { get { return username; } }
 
         public ChatForm(ChatApplicationMain chatApplication, IEnumerable<string> users, string username)
         {
@@ -23,6 +23,7 @@ namespace ChatApplicationGui
             this.chatApplication = chatApplication;
             InitializeComponent();
             txtInput.KeyDown += txtInput_KeyDown;
+            this.FormClosing += ChatForm_Closing;
 
             foreach (var user in users)
             {
@@ -38,11 +39,16 @@ namespace ChatApplicationGui
             Update();
         }
 
+        private void ChatForm_Closing(object sender, CancelEventArgs e)
+        {
+            chatApplication.RemoveUserFromChat(username);
+        }
+
         private void txtInput_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                chatApplication.SendMessage(this, txtRecipient.Text, txtInput.Text);
+                chatApplication.SendMessage(Username, txtRecipient.Text, txtInput.Text);
                 txtInput.Clear();
             }
         }
@@ -72,7 +78,7 @@ namespace ChatApplicationGui
             }));
         }
 
-        public void AddChatLine(ChatApplication.Message message)
+        public void AppendMessageToChat(ChatApplication.Message message)
         {
             Invoke(new Action(() =>
             {
@@ -82,7 +88,6 @@ namespace ChatApplicationGui
 
         public void AddChatErrorLine(string errorMessage)
         {
-
             Invoke(new Action(() =>
             {
                 chatOutput.SelectionStart = chatOutput.TextLength;
@@ -104,7 +109,6 @@ namespace ChatApplicationGui
 
         private void signoutButton_Click(object sender, EventArgs e)
         {
-            chatApplication.RemoveUserFromChat(username);
             Close();
         }
 

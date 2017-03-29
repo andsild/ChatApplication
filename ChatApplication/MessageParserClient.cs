@@ -6,38 +6,34 @@ namespace ChatApplication
     public class MessageParserClient : IMessageParser
     {
         private readonly string username;
-        private readonly IChatApplication chatApplication;
+        private readonly IChatUi chatUi;
         /// <summary>
         /// A <see cref="Message"/>parser that can read messages and update user interfaces
         /// </summary>
         /// <param name="username"></param>
         /// <param name="chatApplication"></param>
-        public MessageParserClient(string username, IChatApplication chatApplication) 
+        public MessageParserClient(string username, IChatUi chatUi) 
         {
             this.username = username;
-            this.chatApplication = chatApplication;
+            this.chatUi = chatUi;
         }
 
-        public void ParseReceivedMessage(string text)
+        public void OnMessageParserError(Exception e)
         {
-            Message message = null;
-            try
+            if(e is ArgumentException)
             {
-                message = Message.ParseReceivedMessage(text);
+                chatUi.AddChatErrorLine($@"Command failed :: {e.Message}");
             }
-            catch (ArgumentException ae)
-            {
-                chatApplication.AddChatErrorLine(username, $@"Command failed :: {ae.Message}");
-                return;
-            }
-
+        }
+        public void OnMessageParseSuccess(Message message)
+        {
             if (message.Recipient == username || message.Recipient == Configuration.BROADCAST_CHANNELNAME)
             {
-                chatApplication.AppendParsedMessageToChat(username, message);
+                chatUi.AppendMessageToChat(message);
             }
             else
             {
-                chatApplication.AddChatErrorLine(username, "Received stray message ::" + message);
+                chatUi.AddChatErrorLine("Received stray message ::" + message);
             }
         }
     }
